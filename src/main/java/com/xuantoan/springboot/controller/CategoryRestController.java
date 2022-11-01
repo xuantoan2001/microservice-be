@@ -18,6 +18,11 @@ public class CategoryRestController {
         return categoryService.findAll();
     }
 
+    @GetMapping( "/category/name/{name}")
+    public CategoryEntity getCategoryByName(@PathVariable String name) {
+        return categoryService.getCategoryByName(name);
+    }
+
     @GetMapping( "/category/{id}")
     public CategoryEntity getCategoryById(@PathVariable Long id) {
         return categoryService.getCategoryById(id);
@@ -34,5 +39,8 @@ public class CategoryRestController {
         return categoryService.save(category);
     }
 
-
+    @DeleteMapping("/category")
+    public void delete(@RequestBody Long[]  ids) {
+        categoryService.delete(ids);
+    }
 }

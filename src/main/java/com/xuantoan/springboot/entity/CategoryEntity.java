@@ -17,7 +17,6 @@ public class CategoryEntity extends BaseEntity{
 
 
     @OneToMany(mappedBy = "category",
-            cascade = CascadeType.ALL,
             orphanRemoval = true
     )
     @JsonIgnore

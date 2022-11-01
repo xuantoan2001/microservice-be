@@ -17,11 +17,16 @@ public class ProductRestController {
     public List<ProductEntity> listNew() {
         return productService.findAll();
     }
+
     @GetMapping( "/product/{id}")
     public ProductEntity getProductById(@PathVariable Long id) {
         return productService.getProductById(id);
     }
 
+    @GetMapping( "/product/category/{id}")
+    public List<ProductEntity> getProductByCategoryId(@PathVariable Long id) {
+        return productService.getProductByCategoryId(id);
+    }
 
     @PostMapping("/product")
     public ProductEntity save(@RequestBody ProductEntity product) {
@@ -35,7 +40,7 @@ public class ProductRestController {
     }
 
     @DeleteMapping("/product")
-    public void delete(@RequestBody Long  ids) {
+    public void delete(@RequestBody Long[]  ids) {
         productService.delete(ids);
     }
 }

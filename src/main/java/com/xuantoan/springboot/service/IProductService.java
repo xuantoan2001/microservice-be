@@ -6,8 +6,10 @@ import java.util.List;
 public interface IProductService {
 
     List<ProductEntity> findAll();
+    List<ProductEntity> getProductByCategoryId(Long id);
     ProductEntity getProductById(Long id);
+
     ProductEntity save(ProductEntity product);
-    void delete(Long id);
-    String ConventProductImg(String conventProductImg);
+
+    void delete(Long[] id);
 }
