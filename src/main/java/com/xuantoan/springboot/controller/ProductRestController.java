@@ -1,46 +1,49 @@
 package com.xuantoan.springboot.controller;
 
+import com.xuantoan.springboot.controller.output.CustomReponse;
 import com.xuantoan.springboot.entity.ProductEntity;
-import com.xuantoan.springboot.service.IProductService;
+import com.xuantoan.springboot.service.IBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.*;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
+import java.util.Optional;
 
-import java.util.List;
-
+@CrossOrigin
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/product")
 public class ProductRestController {
     @Autowired
-    private IProductService productService;
+    private IBaseService<ProductEntity> productService;
 
-    @GetMapping( "/product")
-    public List<ProductEntity> listNew() {
-        return productService.findAll();
+    @GetMapping("")
+    public Page<ProductEntity> getAll(@RequestParam(name ="page",required = false, defaultValue = "1") Integer page,
+                                      @RequestParam(name ="limit",required = false, defaultValue = "5") Integer limit,
+                                      @RequestParam(name ="sortname",required = false, defaultValue = "DESC") String sortname,
+                                      @RequestParam(name ="sortby",required = false, defaultValue = "id") String sortby) {
+//                                      @RequestParam(name ="seach",required = false) String keyword){
+        Sort sort = Sort.by(Sort.Direction.fromString(sortname),sortby);
+        Pageable pageable = PageRequest.of(page-1,limit,sort);
+        return productService.getAllPagingAndSorting(pageable);
     }
 
-    @GetMapping( "/product/{id}")
-    public ProductEntity getProductById(@PathVariable Long id) {
-        return productService.getProductById(id);
+    @GetMapping("/{id}")
+    public Optional<ProductEntity> getOneByID(@PathVariable Long id) {
+        return productService.getOneById(id);
     }
 
-    @GetMapping( "/product/category/{id}")
-    public List<ProductEntity> getProductByCategoryId(@PathVariable Long id) {
-        return productService.getProductByCategoryId(id);
-    }
-
-    @PostMapping("/product")
+    @PostMapping("")
     public ProductEntity save(@RequestBody ProductEntity product) {
-        return productService.save(product);
+        return productService.saveOrUpdte(product);
     }
 
-    @PutMapping("/product/{id}")
-    public ProductEntity update(@RequestBody ProductEntity product, @PathVariable Long  id) {
-        product.setId(id);
-        return productService.save(product);
-    }
-
-    @DeleteMapping("/product")
-    public void delete(@RequestBody Long[]  ids) {
-        productService.delete(ids);
+    @DeleteMapping("/{id}")
+    public CustomReponse delete(@PathVariable Long id) {
+        CustomReponse reponse = new CustomReponse();
+        if(productService.delete(id)) {
+            reponse.setStatus(HttpStatus.OK);
+            reponse.setMessage("Xóa sản phẩm thành công!");
+        }
+        return  reponse;
     }
 }

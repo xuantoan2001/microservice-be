@@ -1,68 +1,54 @@
 package com.xuantoan.springboot.service.impl;
 
 import com.xuantoan.springboot.entity.ProductEntity;
+import com.xuantoan.springboot.exception.NotFoundException;
 import com.xuantoan.springboot.repository.ProductRepository;
-import com.xuantoan.springboot.service.IProductService;
+import com.xuantoan.springboot.service.IBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Optional;
 
 @Service
-public class ProductService implements IProductService {
-    private final ProductRepository productRepository;
-
+public class ProductService  implements IBaseService<ProductEntity> {
     @Autowired
-    public ProductService(ProductRepository productRepository) {
-        this.productRepository = productRepository;
+    private  ProductRepository productRepository;
+
+    @Override
+    public Page<ProductEntity> getAllPagingAndSorting(Pageable pageable) {
+        return productRepository.findAll(pageable);
     }
 
     @Override
-    public List<ProductEntity> findAll() {
-        List<ProductEntity> list =  productRepository.findAll();
-
-        return list;
-    }
-
-    @Override
-    public List<ProductEntity> getProductByCategoryId(Long id) {
-        List<ProductEntity> list = productRepository.findAll();
-        List<ProductEntity> data = new ArrayList<>();
-        for(ProductEntity i : list){
-            Long cate1_id = i.getCategory().getId();
-            if(cate1_id == id)
-                data.add(i);
+    public Optional<ProductEntity> getOneById(Long id) {
+        Optional<ProductEntity> productEntity = productRepository.findById(id);
+        if(productEntity.isEmpty()){
+            throw new NotFoundException("Không tìm thấy sản phẩm!");
         }
-        return data;
+        return productEntity;
     }
 
     @Override
-    public ProductEntity save(ProductEntity product) {
+    public ProductEntity saveOrUpdte(ProductEntity entity) {
         ProductEntity old = new ProductEntity();
-        if(product.getId() != null){
-            old = productRepository.findById(product.getId()).orElse(null);
+        if(entity.getId() != null){
+            old = productRepository.findById(entity.getId()).orElse(null);
         }
-        //int oi = product.getProductImage().length();
-        if(product.getProductImage().length() == 0){
+        if(entity.getProductImage().length() == 0){
             assert old != null;
-            product.setProductImage(old.getProductImage());
+            entity.setProductImage(old.getProductImage());
         }
-        return productRepository.save(product);
+        return productRepository.save(entity);
     }
 
     @Override
-    public void delete(Long[] id) {
-        for (Long i:id){
-            productRepository.deleteById(i);
-        }
+    public boolean delete(Long id) {
+       if(!productRepository.existsById(id)){
+           throw new NotFoundException("ID KHÔNG TỒN TẠI");
+       }
+       productRepository.deleteById(id);
+       return true;
     }
-
-    @Override
-    public ProductEntity getProductById(Long id) {
-        ProductEntity pd = productRepository.findById(id).orElse(null);
-        return pd;
-    }
-
-
 }
