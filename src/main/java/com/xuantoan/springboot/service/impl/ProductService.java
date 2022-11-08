@@ -22,6 +22,11 @@ public class ProductService  implements IBaseService<ProductEntity> {
     }
 
     @Override
+    public Page<ProductEntity> getAllPagingAndSorting(Pageable pageable, String keyword) {
+        return productRepository.getAllPagingSortingAndSeaching(pageable,keyword);
+    }
+
+    @Override
     public Optional<ProductEntity> getOneById(Long id) {
         Optional<ProductEntity> productEntity = productRepository.findById(id);
         if(productEntity.isEmpty()){

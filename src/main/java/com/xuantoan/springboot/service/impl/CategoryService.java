@@ -26,6 +26,11 @@ public class CategoryService implements IBaseService<CategoryEntity> {
     }
 
     @Override
+    public Page<CategoryEntity> getAllPagingAndSorting(Pageable pageable, String keyword) {
+        return null;
+    }
+
+    @Override
     public Optional<CategoryEntity> getOneById(Long id) {
         Optional<CategoryEntity> CategoryEntity = categoryRepository.findById(id);
         if(CategoryEntity.isEmpty()){
@@ -55,7 +60,8 @@ public class CategoryService implements IBaseService<CategoryEntity> {
         if(!categoryRepository.existsById(id)){
             throw new NotFoundException("ID KHÔNG TỒN TẠI");
         }
-        if(productRepository.findAllByCategory_Id(id) != null){
+
+        if(productRepository.findAllByCategory_Id(id).size() > 0){
             throw new SQLException("Vui lòng xóa hết những sản phẩm có trong danh mục trước!");
         }
         categoryRepository.deleteById(id);
