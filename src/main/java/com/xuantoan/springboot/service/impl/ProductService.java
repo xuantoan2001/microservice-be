@@ -51,4 +51,9 @@ public class ProductService  implements IBaseService<ProductEntity> {
        productRepository.deleteById(id);
        return true;
     }
+
+    @Override
+    public  Optional<ProductEntity> getOneByName(String name) {
+        return null;
+    }
 }

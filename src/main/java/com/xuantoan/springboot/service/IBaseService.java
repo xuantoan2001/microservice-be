@@ -10,4 +10,5 @@ public interface IBaseService<T> {
     Optional<T> getOneById(Long id);
     T saveOrUpdte(T entity);
     boolean delete(Long id);
+    Optional<T> getOneByName(String name);
 }

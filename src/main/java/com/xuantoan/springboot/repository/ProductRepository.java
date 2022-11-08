@@ -6,9 +6,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
+
 @Repository
 public interface ProductRepository extends PagingAndSortingRepository<ProductEntity, Long> {
     Page<ProductEntity> findAllByProductNameContainingOrDescriptionContaining(String name,String depcrip, Pageable pageable);
+    List<ProductEntity> findAllByCategory_Id(Long id);
     //@Query//object (tenclass or ten table)
     //@Query(nativeQuery = true)//sql (tenclass or ten table)
     //spring vadidate form

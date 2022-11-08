@@ -2,7 +2,9 @@ package com.xuantoan.springboot.service.impl;
 
 import com.xuantoan.springboot.entity.CategoryEntity;
 import com.xuantoan.springboot.exception.NotFoundException;
+import com.xuantoan.springboot.exception.SQLException;
 import com.xuantoan.springboot.repository.CategoryRepository;
+import com.xuantoan.springboot.repository.ProductRepository;
 import com.xuantoan.springboot.service.IBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -16,7 +18,8 @@ import java.util.Optional;
 public class CategoryService implements IBaseService<CategoryEntity> {
     @Autowired
     private CategoryRepository categoryRepository;
-
+    @Autowired
+    private ProductRepository productRepository;
     @Override
     public Page<CategoryEntity> getAllPagingAndSorting(Pageable pageable) {
         return categoryRepository.findAll(pageable);
@@ -30,7 +33,14 @@ public class CategoryService implements IBaseService<CategoryEntity> {
         }
         return CategoryEntity;
     }
-
+    @Override
+    public Optional<CategoryEntity> getOneByName(String name) {
+        Optional<CategoryEntity> CategoryEntity = categoryRepository.findByCategoryName(name);
+        if(CategoryEntity.isEmpty()){
+            throw new NotFoundException("Không tìm danh mục!");
+        }
+        return CategoryEntity;
+    }
     @Override
     public CategoryEntity saveOrUpdte(CategoryEntity entity) {
         CategoryEntity old = new CategoryEntity();
@@ -44,6 +54,9 @@ public class CategoryService implements IBaseService<CategoryEntity> {
     public boolean delete(Long id) {
         if(!categoryRepository.existsById(id)){
             throw new NotFoundException("ID KHÔNG TỒN TẠI");
+        }
+        if(productRepository.findAllByCategory_Id(id) != null){
+            throw new SQLException("Vui lòng xóa hết những sản phẩm có trong danh mục trước!");
         }
         categoryRepository.deleteById(id);
         return true;

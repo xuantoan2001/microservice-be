@@ -31,6 +31,11 @@ public class CategoryRestController {
         return categoryService.getOneById(id);
     }
 
+    @GetMapping("/name/{name}")
+    public Optional<CategoryEntity> getOneByName(@PathVariable String name) {
+        return categoryService.getOneByName(name);
+    }
+
     @PostMapping("")
     public CategoryEntity save(@RequestBody CategoryEntity category) {
         return categoryService.saveOrUpdte(category);
