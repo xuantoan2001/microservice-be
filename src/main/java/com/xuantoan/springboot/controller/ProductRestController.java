@@ -32,6 +32,11 @@ public class ProductRestController {
         return productService.getOneById(id);
     }
 
+    @GetMapping("/name/{name}")
+    public Optional<ProductEntity> getOneByName(@PathVariable String name) {
+        return productService.getOneByName(name);
+    }
+
     @PostMapping("")
     public ProductEntity save(@RequestBody ProductEntity product) {
         return productService.saveOrUpdte(product);

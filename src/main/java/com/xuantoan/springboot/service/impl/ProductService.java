@@ -23,7 +23,14 @@ public class ProductService  implements IBaseService<ProductEntity> {
 
     @Override
     public Page<ProductEntity> getAllPagingAndSorting(Pageable pageable, String keyword) {
-        return productRepository.getAllPagingSortingAndSeaching(pageable,keyword);
+        if(keyword==null || keyword.equals("null") ){
+            return productRepository.findAll(pageable);
+        }
+        if(keyword.length()>0)
+            return productRepository.getAllPagingSortingAndSeaching(pageable,keyword.toLowerCase());
+        else
+            return productRepository.findAll(pageable);
+
     }
 
     @Override
@@ -59,6 +66,6 @@ public class ProductService  implements IBaseService<ProductEntity> {
 
     @Override
     public  Optional<ProductEntity> getOneByName(String name) {
-        return null;
+        return productRepository.findByProductName(name);
     }
 }
