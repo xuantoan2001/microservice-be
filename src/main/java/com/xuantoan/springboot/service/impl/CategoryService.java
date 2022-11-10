@@ -47,7 +47,7 @@ public class CategoryService implements IBaseService<CategoryEntity> {
         return CategoryEntity;
     }
     @Override
-    public CategoryEntity saveOrUpdte(CategoryEntity entity) {
+    public CategoryEntity saveOrUpdate(CategoryEntity entity) {
         CategoryEntity old = new CategoryEntity();
         if(entity.getId() != null){
             old = categoryRepository.findById(entity.getId()).orElse(null);

@@ -38,7 +38,7 @@ public class CategoryRestController {
 
     @PostMapping("")
     public CategoryEntity save(@RequestBody CategoryEntity category) {
-        return categoryService.saveOrUpdte(category);
+        return categoryService.saveOrUpdate(category);
     }
 
     @DeleteMapping("/{id}")

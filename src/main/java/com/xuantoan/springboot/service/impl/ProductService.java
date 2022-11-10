@@ -4,6 +4,7 @@ import com.xuantoan.springboot.entity.ProductEntity;
 import com.xuantoan.springboot.exception.NotFoundException;
 import com.xuantoan.springboot.repository.ProductRepository;
 import com.xuantoan.springboot.service.IBaseService;
+import com.xuantoan.springboot.service.IProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -12,7 +13,7 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 
 @Service
-public class ProductService  implements IBaseService<ProductEntity> {
+public class ProductService  implements IBaseService<ProductEntity>, IProductService<ProductEntity> {
     @Autowired
     private  ProductRepository productRepository;
 
@@ -23,7 +24,7 @@ public class ProductService  implements IBaseService<ProductEntity> {
 
     @Override
     public Page<ProductEntity> getAllPagingAndSorting(Pageable pageable, String keyword) {
-        if(keyword==null || keyword.equals("null") ){
+        if(keyword==null || keyword.equals("null")){
             return productRepository.findAll(pageable);
         }
         if(keyword.length()>0)
@@ -43,7 +44,7 @@ public class ProductService  implements IBaseService<ProductEntity> {
     }
 
     @Override
-    public ProductEntity saveOrUpdte(ProductEntity entity) {
+    public ProductEntity saveOrUpdate(ProductEntity entity) {
         ProductEntity old = new ProductEntity();
         if(entity.getId() != null){
             old = productRepository.findById(entity.getId()).orElse(null);
@@ -67,5 +68,20 @@ public class ProductService  implements IBaseService<ProductEntity> {
     @Override
     public  Optional<ProductEntity> getOneByName(String name) {
         return productRepository.findByProductName(name);
+    }
+
+    @Override
+    public Page<ProductEntity> getByCategoryPagingAndSorting(Pageable pageable, String keyword, String category) {
+        if(category == "all"|| category.equals("all"))
+            return getAllPagingAndSorting( pageable, keyword);
+        else{
+            if(keyword==null || keyword.equals("null")){
+                return productRepository.findAllByCategory_CategoryName(pageable,category);
+            }
+            if(keyword.length()>0)
+                return productRepository.getByCategoryPagingSortingAndSeaching(pageable,keyword,category);
+            else
+                return productRepository.findAllByCategory_CategoryName(pageable,category);
+        }
     }
 }
