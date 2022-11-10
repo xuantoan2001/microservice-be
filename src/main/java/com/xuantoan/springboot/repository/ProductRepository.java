@@ -15,12 +15,12 @@ import java.util.Optional;
 @Repository
 public interface ProductRepository extends PagingAndSortingRepository<ProductEntity, Long> {
 
-    @Query(value = "select * from product as p inner join category ca on p.category_id= ca.id " +
-            "where  p.product_name LIKE %:keyword% or p.description LIKE %:keyword%", nativeQuery = true,countQuery = "SELECT count(*) from product")
+    @Query(value = "select distinct * from product as p inner join category ca on p.category_id= ca.id " +
+            "where  p.product_name LIKE %:keyword% or p.description LIKE %:keyword%", nativeQuery = true,countQuery = "SELECT count(*)")
     Page<ProductEntity> getAllPagingSortingAndSeaching(Pageable pageable,@Param("keyword") String seach);
 
     @Query(value = "select * from product as p inner join category ca on p.category_id= ca.id " +
-            "where  ca.category_name = :cate_name and (p.product_name LIKE %:keyword% or p.description LIKE %:keyword%)", nativeQuery = true,countQuery = "SELECT count(*) from product")
+            "where  ca.category_name = :cate_name and (p.product_name LIKE %:keyword% or p.description LIKE %:keyword%)", nativeQuery = true,countQuery = "SELECT count(*)")
     Page<ProductEntity> getByCategoryPagingSortingAndSeaching(Pageable pageable,@Param("keyword") String seach,@Param("cate_name") String category);
 
 
